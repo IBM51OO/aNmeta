@@ -6,7 +6,7 @@
           <div class="header-navigation__main">
             <nav class="nav header__nav">
               <ul class="nav__list">
-                <li class="nav__item">Главная</li>
+                <li class="nav__item"><NuxtLink to="/">Главная</NuxtLink></li>
                 <li class="nav__item">Аниме</li>
                 <li class="nav__item">Календарь релизов</li>
                 <li class="nav__item">Новости</li>
@@ -23,9 +23,7 @@
         </div>
       </div>
     </header>
-    <div class="page">
-      <slot />
-    </div>
+    <slot />
   </div>
 </template>
 <script lang="ts" setup></script>
@@ -38,13 +36,14 @@
 	width: 100%;
 	z-index: 3;
 	height: 60px;
+	background: #1E1E1E;
 
 	.header-navigation 
 	{
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-top: 20px;
+		height: 60px;
 	}
 	.header-navigation__main 
 	{
@@ -81,6 +80,14 @@
 			padding: 0;
 			display: flex;
 			align-items: center;
+		.nav__item
+		{
+			a
+			{
+				text-decoration: none;
+				color: #fff;
+			}
+		}
 		.nav__item:not(:last-child) 
 		{
 			margin-right: 20px;
