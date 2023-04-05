@@ -117,8 +117,6 @@ const slideItems = ref<Array<Movie>>([
 const thumbsSwiper = ref(null);
 
 function setThumbsSwiper(swiper: any) {
-  console.log(swiper);
-
   thumbsSwiper.value = swiper;
 }
 </script>

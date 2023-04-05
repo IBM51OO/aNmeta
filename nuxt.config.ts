@@ -9,7 +9,7 @@ export default defineNuxtConfig({
         // Public keys that are exposed to the client
         public: 
         {
-            apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api'
+            baseURL: process.env.NUXT_PUBLIC_API_BASE || '/api'
         }
     },
 
@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         'nuxt-icon',
         '~/modules/home/module',
         '~/modules/anime/module',
+        '~/modules/auth/module',
     ],
     typescript: 
     {

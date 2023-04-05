@@ -4,7 +4,7 @@
         <div class="anime">
             <div class="anime__left">
                 <div class="anime__left-content">
-                    <AnimePlayer />
+                    <AnimePlayer/>
                     <AnimeDescription :anime="anime" />
                 </div>
             </div>
@@ -12,23 +12,33 @@
                 <div class="anime__right-content">
                     <div class="anime-related">
                         <h3>Связанные аниме</h3>
-                        <div class="anime-related__item">
-                            <div class="item__img">
-                                <img src="../assets/img/3.jpg" alt="">
+                        <TransitionGroup name="list">
+                            <div class="anime-related__item" v-for="relatedAnimeItem in filteredRelatedAnime" :key="relatedAnimeItem.id">
+                                <div class="item__img">
+                                    <img :src="relatedAnimeItem.poster" alt="">
+                                </div>
+                                <div class="item__info">
+                                    <NuxtLink :to="'/anime/'+relatedAnimeItem.id">
+                                        <p class="item-name">
+                                            {{relatedAnimeItem.title}}
+                                        </p>
+                                    </NuxtLink>
+                                    <span class="item-year">
+                                        {{relatedAnimeItem.year}}
+                                    </span>
+                                    <span class="dot"></span>
+                                    <span class="item-episodes">
+                                        Cер {{relatedAnimeItem.lastEpisode}}/{{relatedAnimeItem.lastEpisode}}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="item__info">
-                                <p class="item-name">
-                                    Человек-бензопила
-                                </p>
-                                <span class="item-year">
-                                    2022
-                                </span>
-                                <span class="dot"></span>
-                                <span class="item-episodes">
-                                    Cер 25/25
-                                </span>
-                            </div>
-                        </div>
+                        </TransitionGroup>
+                        <button class="anime-related__show-more" v-if="props.relatedAnime?.length > 5 && !isAllRelated" @click="isAllRelated = true">
+                            Показать еще
+                        </button>
+                        <button class="anime-related__hide-more" v-else @click="isAllRelated = false">
+                            Скрыть
+                        </button>
                     </div>
                     <div class="anime-top">
                         <div class="anime-top__header-panel">
@@ -172,17 +182,54 @@
 import AnimePlayer from "@/modules/anime/components/AnimePlayer.vue";
 import AnimeDescription from "@/modules/anime/components/AnimeDescription.vue";
 import AnimeDetail from "../types/AnimeDetail";
+import RelatedAnime from "../types/RelatedAnime";
 
-const props = defineProps<{
-  anime: AnimeDetail;
-}>();
+const props = withDefaults(
+    defineProps<{
+        anime: AnimeDetail | null;
+        relatedAnime: RelatedAnime[] | null
+    }>(),
+    {
+        relatedAnime: null
+    }
+);
+
+const isAllRelated = ref(false);
+
+/*
+**  показывает скрытые связанные аниме
+**  если те не уместились
+*/
+const filteredRelatedAnime = computed(() =>
+{
+    if(isAllRelated.value)
+    {
+        return props.relatedAnime
+    }
+    else
+    {
+        return props.relatedAnime?.length > 5 ? props.relatedAnime?.slice(0, 5) : props.relatedAnime
+    }
+})
 
 </script>
 
 
 <style lang="scss">
+
 .anime-wrapper
 {
+    .list-enter-active,
+        .list-leave-active 
+        {
+            transition: all 0.5s ease;
+        }
+    .list-enter-from,
+    .list-leave-to 
+    {
+        opacity: 0;
+        transform: translateX(30px);
+    }
     background: #0e0e0e;
     padding-top: 90px;
     .anime
@@ -216,6 +263,16 @@ const props = defineProps<{
                     background: #1c1c1c;
                     padding: 15px;
                     border-radius: 6px;
+                    .anime-related__show-more, .anime-related__hide-more
+                    {
+                        margin: 15px auto 0 auto;
+                        width: 100%;
+                        border: none;
+                        font-family: "Open Sans";
+                        font-weight: 500;
+                        color: #7a7a7a;
+                        font-size: 14px;
+                    }
                     h3
                     {
                         font-family: 'Open Sans';
@@ -227,13 +284,20 @@ const props = defineProps<{
                     {
                         display: flex;
                         align-items: center;
+                        margin-top: 10px;
                         .item__info
                         {
+                            
+                            flex: 80%;
                             color: #ababab;
                             font-family: 'Open Sans';
                             font-weight: 500;
                             font-size: 14px;
-                            padding-left: 15px;
+                            a
+                            {
+                                color: #ababab;
+                                text-decoration: none;
+                            }
                             .item-name
                             {
                                 margin: 0 0 5px 0;
@@ -256,6 +320,7 @@ const props = defineProps<{
                         }
                         .item__img
                         {
+                            flex: 20%;
                             img
                             {
                                 width: 46px;
@@ -337,7 +402,7 @@ const props = defineProps<{
                                 position: absolute;
                                 display: flex;
                                 align-items: center;
-                                z-index: 3;
+                                z-index: 2;
                                 bottom: 15px;
                                 left: 15px;
 

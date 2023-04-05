@@ -3,7 +3,7 @@
         <div class="anime-descript">
             <div class="anime-descript__media">
                 <div class="media__poster">
-                    <img src="../assets/img/3.jpg" alt="">
+                    <img :src="anime?.material_data.poster_url" alt="">
                 </div>
                 <div class="media__trailer">
                     <img src="../assets/img/dddd.JPG" alt="">
@@ -11,10 +11,10 @@
             </div>
             <div class="anime-descript__title">
                 <p class="title-name">
-                    {{ anime.title }}
+                    {{ anime?.title }}
                 </p>
                 <p class="title-en-name">
-                    {{ anime.title_orig }}
+                    {{ anime?.title_orig }}
                 </p>
                 <div class="title-about">
                     <p class="title-about__label">
@@ -23,11 +23,7 @@
                     <div class="title-about__container">
                         <div class="title-about__items">
                             <div class="title-about__item generes">
-                                <p>Экшен</p>
-                                <p>Фэнтези</p>
-                                <p>Приключения</p>
-                                <p>Драма</p>
-                                <p>Исторический роман</p>
+                                <p v-for="(genre, index) in anime?.material_data.genres" :key="index">{{genre}}</p>
                             </div>
                             <div class="title-about__item type">
                                 <p class="item-label">Тип:</p>
@@ -35,23 +31,25 @@
                             </div>
                             <div class="title-about__item year">
                                 <p class="item-label">Год выпуска:</p>
-                                <p class="item-value">2019</p>
+                                <p class="item-value">{{ anime?.year }}</p>
                             </div>
                             <div class="title-about__item episodes">
                                 <p class="item-label">Серий:</p>
-                                <p class="item-value">26</p>
+                                <p class="item-value">{{ anime?.episodes_count }}</p>
                             </div>
                             <div class="title-about__item duration">
                                 <p class="item-label">Продложительность серии:</p>
-                                <p class="item-value">24 мин.</p>
+                                <p class="item-value">{{anime?.material_data.duration}} мин.</p>
                             </div>
-                            <div class="title-about__item studio">
+                            <div class="title-about__item studios">
                                 <p class="item-label">Студия:</p>
-                                <p class="item-value">А1</p>
+                                <div class="studio" v-for="(studio, index) in anime?.material_data.anime_studios" :key="index">
+                                    <p class="item-value">{{ studio }}</p>
+                                </div>
                             </div>
                             <div class="title-about__item age-limit">
                                 <p class="item-label">Возрастное ограничение:</p>
-                                <p class="item-value">16+</p>
+                                <p class="item-value">{{anime?.material_data.rating_mpaa}}</p>
                             </div>
                         </div>
                         <div class="title-about__synopsis">
@@ -60,7 +58,7 @@
                             </p>
                             <div class="synopsis-content">
                                 <p>
-                                    Акихабара – интереснейшее место, где обитают самые разные люди – от слегка сдвинутых по фазе до больных на всю голову. Именно такая компания собралась в Лаборатории проблем времени, что над лавкой старых телевизоров. Возглавляет её 18-летний Ринтаро Окабэ, сумасшедший ученый и борец с мировым заговором. В серьезном деле нельзя без хакера – вот и он, Итару Хасида, конечно же, толстяк и истинный отаку. Добрая фея лаборатории – Маюри Сиина, подруга детства Ринтаро, официантка мейд-кафе и фанатка косплея, а научную мощь бригады резко повысила юный гений Курису Макисэ зя без хакера – вот и – Маюри Сиина, подруга детства Ринтаро, официантка мейд-кафе и фанатка косплея, а научную мощь бнаучную мощь Маюри Сиина, подруга детства Ринтаро, официантка мейд-кафе и фанатка косплея,
+                                    {{ anime?.material_data.description }}
                                 </p>
                             </div>
                         </div>
@@ -72,9 +70,10 @@
 </template>
 <script lang="ts" setup>
 import AnimeDetail from '../types/AnimeDetail';
+import RelatedAnime from '../types/RelatedAnime';
 
 const props = defineProps<{
-  anime: AnimeDetail;
+  anime: AnimeDetail | null;
 }>();
 
 </script>

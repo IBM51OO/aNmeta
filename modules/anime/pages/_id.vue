@@ -1,6 +1,6 @@
 <template>
     <section class="anime-detail" v-if="anime">
-        <AnimeDetailContent :anime="anime" />
+        <AnimeDetailContent :anime="anime" :relatedAnime="relatedAnime"/>
     </section>
 </template>
 <script lang="ts" setup>
@@ -8,13 +8,41 @@
 import AnimeDetailContent from "@/modules/anime/components/AnimeDetailContent.vue";
 import { useAnime } from "@/modules/anime/store/animeStore";
 import AnimeDetail from "../types/AnimeDetail";
+import RelatedAnime from "../types/RelatedAnime";
 
 const store = useAnime();
 const router = useRoute();
-const anime = ref<AnimeDetail | null>();
+const anime = ref<AnimeDetail| null>();
+const relatedAnime = ref<RelatedAnime[] | null>()
 
-store.fetchAnime(Number(router.params.id))
-anime.value = store.anime
+
+
+const animeFromDb = computed(() => 
+{
+    return store.getAnimeFromDb
+})
+
+async function loadAnime()
+{ 
+    await store.fetchAnime(animeFromDb.value?.titleLink)
+}
+
+function initPage()
+{
+    loadAnime().finally(() => 
+    {
+        anime.value = store.anime?.length > 0 ? store.anime[0] : null
+    })
+    store.fetchRelatedAnimeList((Number(router.params.id))).finally(() => 
+    {
+        relatedAnime.value = store.relatedAnimeList
+    })
+}
+store.fetchAnimeFromDbById(Number(router.params.id)).finally(() => 
+{
+    initPage()
+})
+
 
 </script>
 

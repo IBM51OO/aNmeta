@@ -8,6 +8,7 @@
         <RegistrationBanner />
         <ReleaseCalendar />
     </section>
+    dwdw
 </template>
 
 <script lang="ts" setup>

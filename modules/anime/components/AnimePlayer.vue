@@ -3,7 +3,7 @@
     <iframe
       id="kodik-player"
       loading="lazy"
-      src="//kodik.info/serial/27074/307742332afb697638fcf78510f0ef91/720p"
+      :src="modifiedPlayerLink"
       height="550"
       frameborder="0"
       allowfullscreen
@@ -13,34 +13,25 @@
       <div class="anime-player__voicies">
         <span class="voicies-label">Озвучка</span>
         <div class="voicies-list">
-          <div class="voice">
-            <p>СВ-Дубль</p>
-          </div>
-          <div class="voice">
-            <p>AniLibria</p>
-          </div>
-          <div class="voice">
-            <p>AniDUB</p>
-          </div>
-          <div class="voice">
-            <p>SHIZA Project</p>
-          </div>
-          <div class="voice">
-            <p>AniMedia</p>
-          </div>
-          <div class="voice">
-            <p>Onibaku Group</p>
+          <div 
+            class="voice" 
+              v-for="anime in allAnime" 
+              :key="anime.id" 
+              :class="{'active': anime.translation.id === currentAnime.translation.id}"
+              @click="changeTranslationAnime(anime)"
+            >
+            <p>{{anime.translation.title}}</p>
           </div>
         </div>
       </div>
-      <div class="anime-player__episodes">
+      <div class="anime-player__episodes" v-if="currentAnime.material_data.anime_kind != 'movie'">
         <span class="episodes-label"> Серии </span>
         <div class="episodes-list">
           <Swiper :slides-per-view="5" :space-between="20">
-            <SwiperSlide>
+            <SwiperSlide v-for="(episode, index) in episodesModified" :key="index">
               <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
+                <div class="episode-container" @click="currentPlayerLink = episode.link">
+                  <img :src="episode.screenshots[0]" alt="" />
                   <div class="play-icon">
                     <Icon name="PlayIcon" size="38" />
                   </div>
@@ -49,112 +40,7 @@
                     <span class="day-mounth"> мая </span>
                   </div>
                 </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day" v-if="false">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div class="episode">
-                <div class="episode-container">
-                  <img src="../assets/img/ss.jpg" alt="" />
-                  <div class="play-icon" v-if="false">
-                    <Icon name="PlayIcon" size="38" />
-                  </div>
-                  <div class="episode__release-day">
-                    <span class="day-number"> 6 </span>
-                    <span class="day-mounth"> мая </span>
-                  </div>
-                </div>
-                <span class="episode__number">Серия 1</span>
+                <span class="episode__number" @click="currentPlayerLink = episode.link">Серия {{index}}</span>
               </div>
             </SwiperSlide>
           </Swiper>
@@ -163,6 +49,55 @@
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { useAnime } from "../store/animeStore";
+import AnimeDetail, { Episode } from "../types/AnimeDetail";
+
+const store = useAnime();
+
+
+
+const allAnime = computed(() => 
+{
+  return store.allAnime
+})
+
+const currentAnime = ref<AnimeDetail>(allAnime.value[0]);
+
+const currentPlayerLink = ref(currentAnime.value.link);
+
+const modifiedPlayerLink = computed(() => 
+{
+  return `${currentPlayerLink.value}?hide_selectors=true`
+})
+
+watchEffect(() => currentAnimeUpdated(currentAnime.value))
+
+function currentAnimeUpdated(updatedAnime: AnimeDetail)
+{
+  currentPlayerLink.value = updatedAnime.link
+}
+
+/*
+**  проверка на тип анимме
+**  это фильм или сериал
+*/
+const episodesModified = computed(() => 
+{
+    if(allAnime.value[0]?.material_data.anime_kind === 'movie')
+    {
+        return allAnime.value[0].link
+    }
+    return allAnime.value[0]?.seasons[allAnime.value[0].last_season].episodes
+})
+
+function changeTranslationAnime(selectedAnime: AnimeDetail)
+{
+  currentAnime.value = selectedAnime
+}
+
+</script>
 <style lang="scss">
 .anime-player {
     .anime-player__controlls
@@ -183,8 +118,10 @@
     .voicies-list {
       display: flex;
       margin-top: 10px;
+
       flex-wrap: wrap;
       .voice {
+        cursor: pointer;
         border-radius: 5px;
         background: #303030;
         margin-right: 10px;
@@ -194,6 +131,15 @@
           font-weight: 600;
           font-size: 14px;
           margin: 10px;
+        }
+      }
+      .active
+      {
+        transition: 300ms all ease-in-out;
+        background: #669966;
+        p
+        {
+          color: #fff;
         }
       }
     }
@@ -214,12 +160,14 @@
         // overflow: hidden;
         border-radius: 3px;
         .episode__number {
+          cursor: pointer;
           color: #fff;
           font-family: "Open Sans";
           font-size: 14px;
           font-weight: 500;
         }
         .episode-container {
+          cursor: pointer;
           border-radius: 3px;
         //   width: 220px;
           position: relative;
