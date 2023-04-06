@@ -23,6 +23,7 @@ export default defineNuxtConfig({
         'nuxt-swiper',
         'nuxt-icon',
         '~/modules/home/module',
+        '~/modules/calendar/module',
         '~/modules/anime/module',
     ],
     typescript: 

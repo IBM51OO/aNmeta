@@ -5,4 +5,6 @@ export type Movie =
     title: string,
     content: string,
     poster: string,
+    yearRelease?: string,
+    timeRelease?: string
 }
