@@ -6,7 +6,7 @@
                     <img :src="currentAnime.material_data.poster_url" alt="">
                 </div>
                 <div class="media__trailer">
-                    <img src="../assets/img/dddd.jpg" alt="">
+                    <!-- <img src="../assets/img/dddd.jpg" alt=""> -->
                 </div>
             </div>
             <div class="anime-descript__title">
