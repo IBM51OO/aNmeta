@@ -1,7 +1,19 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     ssr: true,
-    
+    app:
+    {
+        
+        head:
+        {
+            meta: [
+                {
+                    name: 'referrer',
+                    content: 'no-referrer-when-downgrade',
+                },
+            ]
+        }
+    },
     runtimeConfig: 
     {
         // Private keys are only available on the server
@@ -12,7 +24,6 @@ export default defineNuxtConfig({
             baseURL: process.env.NUXT_PUBLIC_API_BASE || '/api'
         }
     },
-
     css: 
     [
         '@/app/index.scss',
@@ -25,6 +36,10 @@ export default defineNuxtConfig({
         '~/modules/home/module',
         '~/modules/anime/module',
         '~/modules/auth/module',
+    ],
+    plugins: 
+    [
+        { src: '~/plugins/click-outside.ts' },
     ],
     typescript: 
     {

@@ -12,12 +12,7 @@
                 <li class="nav__item">Новости</li>
               </ul>
             </nav>
-            <div class="main__search">
-              <input type="text" placeholder="Поиск..." />
-              <div class="search-icon">
-                <Icon name="SearchIcon" size="16" />
-              </div>
-            </div>
+			<Search />
           </div>
           <div class="header-navigation__user">rtegrthtrwww</div>
         </div>
@@ -26,7 +21,9 @@
     <slot />
   </div>
 </template>
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import Search from '@/components/global/Search.vue'
+</script>
 <style lang="scss">
 .header 
 {
@@ -51,26 +48,7 @@
 		align-items: center;
 		justify-content: space-between;
 		flex: 100%;
-	.main__search 
-	{
-		position: relative;
-		border-radius: 20px;
-		background: #16151a;
-		input 
-		{
-			color: #fff;
-			outline: none;
-			border: none;
-			background: none;
-			padding: 11px 0 11px 40px;
-			border-radius: 20px;
-			width: 180px;
-		}
-		input::placeholder
-		{
-			font-size: 14px;
-		}
-	}
+
 	.nav__list {
 			color: #fff;
 			font-family: "Inter";

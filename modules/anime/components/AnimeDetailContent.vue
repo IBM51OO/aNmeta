@@ -5,7 +5,7 @@
             <div class="anime__left">
                 <div class="anime__left-content">
                     <AnimePlayer/>
-                    <AnimeDescription :anime="anime" />
+                    <AnimeDescription />
                 </div>
             </div>
             <div class="anime__right">
@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                         </TransitionGroup>
-                        <button class="anime-related__show-more" v-if="props.relatedAnime?.length > 5 && !isAllRelated" @click="isAllRelated = true">
+                        <button class="anime-related__show-more" v-if="store.getRelatedAnime.length > 5 && !isAllRelated" @click="isAllRelated = true">
                             Показать еще
                         </button>
                         <button class="anime-related__hide-more" v-else @click="isAllRelated = false">
@@ -183,32 +183,28 @@ import AnimePlayer from "@/modules/anime/components/AnimePlayer.vue";
 import AnimeDescription from "@/modules/anime/components/AnimeDescription.vue";
 import AnimeDetail from "../types/AnimeDetail";
 import RelatedAnime from "../types/RelatedAnime";
+import { useAnime } from "../store/animeStore";
 
-const props = withDefaults(
-    defineProps<{
-        anime: AnimeDetail | null;
-        relatedAnime: RelatedAnime[] | null
-    }>(),
-    {
-        relatedAnime: null
-    }
-);
+const props = defineProps<{
+    loaded: boolean
+}>()
 
 const isAllRelated = ref(false);
 
+const store = useAnime();
 /*
-**  показывает скрытые связанные аниме
-**  если те не уместились
+**  содержит скрытые связанные аниме
+**  которые не уместились
 */
 const filteredRelatedAnime = computed(() =>
 {
     if(isAllRelated.value)
     {
-        return props.relatedAnime
+        return store.getRelatedAnime
     }
     else
     {
-        return props.relatedAnime?.length > 5 ? props.relatedAnime?.slice(0, 5) : props.relatedAnime
+        return store.getRelatedAnime.length > 5 ? store.getRelatedAnime.slice(0, 5) : store.getRelatedAnime
     }
 })
 

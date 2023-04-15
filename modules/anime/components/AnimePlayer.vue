@@ -1,5 +1,5 @@
 <template>
-  <div class="anime-player">
+  <div class="anime-player" v-if="currentAnime">
     <iframe
       id="kodik-player"
       loading="lazy"
@@ -18,19 +18,19 @@
               v-for="anime in allAnime" 
               :key="anime.id" 
               :class="{'active': anime.translation.id === currentAnime.translation.id}"
-              @click="changeTranslationAnime(anime)"
+              @click="changeCurrentAnime(anime)"
             >
             <p>{{anime.translation.title}}</p>
           </div>
         </div>
       </div>
-      <div class="anime-player__episodes" v-if="currentAnime.material_data.anime_kind != 'movie'">
+      <div class="anime-player__episodes" v-if="(currentAnime.seasons)">
         <span class="episodes-label"> Серии </span>
         <div class="episodes-list">
           <Swiper :slides-per-view="5" :space-between="20">
-            <SwiperSlide v-for="(episode, index) in episodesModified" :key="index">
+            <SwiperSlide v-for="(episode, index) in animeEpisodes" :key="index">
               <div class="episode">
-                <div class="episode-container" @click="currentPlayerLink = episode.link">
+                <div class="episode-container" @click="changePlayerLink(episode.link)">
                   <img :src="episode.screenshots[0]" alt="" />
                   <div class="play-icon">
                     <Icon name="PlayIcon" size="38" />
@@ -40,7 +40,7 @@
                     <span class="day-mounth"> мая </span>
                   </div>
                 </div>
-                <span class="episode__number" @click="currentPlayerLink = episode.link">Серия {{index}}</span>
+                <span class="episode__number" @click="changePlayerLink(episode.link)">Серия {{index}}</span>
               </div>
             </SwiperSlide>
           </Swiper>
@@ -51,51 +51,71 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, watchEffect } from "vue";
 import { useAnime } from "../store/animeStore";
 import AnimeDetail, { Episode } from "../types/AnimeDetail";
 
 const store = useAnime();
 
+const currentAnime = computed(() => store.getCurrentAnime)
 
+const allAnime = computed(() => store.anime)
 
-const allAnime = computed(() => 
+const modifiedPlayerLink = ref(`${currentAnime.value?.link}?hide_selectors=true`);
+
+const files = ref<Array<string>>();
+const animeEpisodes = computed(() => 
 {
-  return store.allAnime
+  return checkValidIsSerial(currentAnime.value) ? currentAnime.value?.seasons[currentAnime.value.last_season].episodes as Episode[] : null
 })
-
-const currentAnime = ref<AnimeDetail>(allAnime.value[0]);
-
-const currentPlayerLink = ref(currentAnime.value.link);
-
-const modifiedPlayerLink = computed(() => 
+ 
+function getEpisodeMedia(imgLink: string)
 {
-  return `${currentPlayerLink.value}?hide_selectors=true`
-})
+  const resp = $fetch(imgLink, {headers: {
+    'Accept': 'application/json', // This is set on request
+    'Content-Type': 'application/json', // This is set on request
+    'X-CSRF-Token': 'abcdefghijklmnop', // This is set on request
+    'Cache': 'no-cache', // This is set on request
+      credentials: 'same-origin', // This is set on request
+    'Cookie': 'csrftoken=abcdefghijklmnop' // This is missing from request
+  } });
+  files.value?.push()
+} 
 
-watchEffect(() => currentAnimeUpdated(currentAnime.value))
 
-function currentAnimeUpdated(updatedAnime: AnimeDetail)
+
+// Проверяет есть ли у аниме сезоны,
+// если нет значит это фильм, ова или еще какая приблуда
+// возвращает true если если сериал
+
+function checkValidIsSerial(anime: AnimeDetail | null)
 {
-  currentPlayerLink.value = updatedAnime.link
-}
-
-/*
-**  проверка на тип анимме
-**  это фильм или сериал
-*/
-const episodesModified = computed(() => 
-{
-    if(allAnime.value[0]?.material_data.anime_kind === 'movie')
+  if(anime?.seasons)
+  {
+    if(anime?.seasons[anime.last_season])
     {
-        return allAnime.value[0].link
+      return true
     }
-    return allAnime.value[0]?.seasons[allAnime.value[0].last_season].episodes
-})
+  }
 
-function changeTranslationAnime(selectedAnime: AnimeDetail)
-{
-  currentAnime.value = selectedAnime
+  return false
 }
+
+// Меняем текущее активное аниме
+// к примеру при смене озвучки
+
+function changeCurrentAnime(anime: AnimeDetail)
+{
+  store.setCurrentAnime(anime)
+  
+  changePlayerLink(anime.link)
+}
+
+function changePlayerLink(link: string)
+{
+  modifiedPlayerLink.value = `${link}?hide_selectors=true`
+}
+
 
 </script>
 <style lang="scss">
@@ -123,6 +143,7 @@ function changeTranslationAnime(selectedAnime: AnimeDetail)
       .voice {
         cursor: pointer;
         border-radius: 5px;
+        margin-top: 10px;
         background: #303030;
         margin-right: 10px;
         p {

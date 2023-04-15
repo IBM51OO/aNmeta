@@ -1,9 +1,9 @@
 <template>
-    <div class="anime-descript__container">
+    <div class="anime-descript__container" v-if="currentAnime">
         <div class="anime-descript">
             <div class="anime-descript__media">
                 <div class="media__poster">
-                    <img :src="anime?.material_data.poster_url" alt="">
+                    <img :src="currentAnime.material_data.poster_url" alt="">
                 </div>
                 <div class="media__trailer">
                     <img src="../assets/img/dddd.JPG" alt="">
@@ -11,10 +11,10 @@
             </div>
             <div class="anime-descript__title">
                 <p class="title-name">
-                    {{ anime?.title }}
+                    {{ currentAnime.title }}
                 </p>
                 <p class="title-en-name">
-                    {{ anime?.title_orig }}
+                    {{ currentAnime.title_orig }}
                 </p>
                 <div class="title-about">
                     <p class="title-about__label">
@@ -23,7 +23,7 @@
                     <div class="title-about__container">
                         <div class="title-about__items">
                             <div class="title-about__item generes">
-                                <p v-for="(genre, index) in anime?.material_data.genres" :key="index">{{genre}}</p>
+                                <p v-for="(genre, index) in currentAnime.material_data.genres" :key="index">{{genre}}</p>
                             </div>
                             <div class="title-about__item type">
                                 <p class="item-label">Тип:</p>
@@ -31,25 +31,25 @@
                             </div>
                             <div class="title-about__item year">
                                 <p class="item-label">Год выпуска:</p>
-                                <p class="item-value">{{ anime?.year }}</p>
+                                <p class="item-value">{{ currentAnime.year }}</p>
                             </div>
                             <div class="title-about__item episodes">
                                 <p class="item-label">Серий:</p>
-                                <p class="item-value">{{ anime?.episodes_count }}</p>
+                                <p class="item-value">{{ currentAnime.episodes_count }}</p>
                             </div>
                             <div class="title-about__item duration">
                                 <p class="item-label">Продложительность серии:</p>
-                                <p class="item-value">{{anime?.material_data.duration}} мин.</p>
+                                <p class="item-value">{{currentAnime.material_data.duration}} мин.</p>
                             </div>
                             <div class="title-about__item studios">
                                 <p class="item-label">Студия:</p>
-                                <div class="studio" v-for="(studio, index) in anime?.material_data.anime_studios" :key="index">
+                                <div class="studio" v-for="(studio, index) in currentAnime.material_data.anime_studios" :key="index">
                                     <p class="item-value">{{ studio }}</p>
                                 </div>
                             </div>
                             <div class="title-about__item age-limit">
                                 <p class="item-label">Возрастное ограничение:</p>
-                                <p class="item-value">{{anime?.material_data.rating_mpaa}}</p>
+                                <p class="item-value">{{currentAnime.material_data.rating_mpaa}}</p>
                             </div>
                         </div>
                         <div class="title-about__synopsis">
@@ -58,7 +58,7 @@
                             </p>
                             <div class="synopsis-content">
                                 <p>
-                                    {{ anime?.material_data.description }}
+                                    {{ currentAnime.material_data.description }}
                                 </p>
                             </div>
                         </div>
@@ -69,12 +69,13 @@
     </div>
 </template>
 <script lang="ts" setup>
+import { useAnime } from '../store/animeStore';
 import AnimeDetail from '../types/AnimeDetail';
 import RelatedAnime from '../types/RelatedAnime';
 
-const props = defineProps<{
-  anime: AnimeDetail | null;
-}>();
+const store = useAnime();
+
+const currentAnime = computed(() => store.getCurrentAnime)
 
 </script>
 <style lang="scss">
