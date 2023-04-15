@@ -26,8 +26,7 @@ export default defineNuxtConfig({
     },
     css: 
     [
-        '@/app/index.scss',
-        '@/app/'
+        '~/app/index.scss',
     ],
     modules: [
         '@pinia/nuxt',
