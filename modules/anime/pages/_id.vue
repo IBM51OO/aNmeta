@@ -20,9 +20,9 @@ const loaded = ref(false);
 
 async function initPage()
 {
-    await store.fetchAnimeFromDbById(Number(router.params.id))
-    await store.fetchRelatedAnimeList(Number(router.params.id))
-    await store.fetchAnime(store.getAnimeFromDb?.titleLink)
+    // await store.fetchAnimeFromDbById(Number(router.params.id))
+    // await store.fetchRelatedAnimeList(Number(router.params.id))
+    await store.fetchAnime('http://www.world-art.ru/animation/animation.php?id=8026')
 
     store.setCurrentAnime(anime.value)
 }
