@@ -1,9 +1,9 @@
 <template>
-  <div class="anime-player" v-if="currentAnime">
+  <div class="anime-player" v-if="currentAnime && playerLink">
     <iframe
       id="kodik-player"
       loading="lazy"
-      :src="modifiedPlayerLink"
+      :src="playerLink"
       height="550"
       frameborder="0"
       allowfullscreen
@@ -17,8 +17,8 @@
             class="voice" 
               v-for="anime in allAnime" 
               :key="anime.id" 
-              :class="{'active': anime.translation.id === currentAnime.translation.id}"
-              @click="changeCurrentAnime(anime)"
+              :class="{'active': animeTranslation?.id === anime.translation.id }"
+              @click="changeTranslation(anime)"
             >
             <p>{{anime.translation.title}}</p>
           </div>
@@ -51,9 +51,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watchEffect } from "vue";
+import { computed } from "vue";
 import { useAnime } from "../store/animeStore";
-import AnimeDetail, { Episode } from "../types/AnimeDetail";
+import AnimeDetail, { Episode, Translation } from "../types/AnimeDetail";
 
 const store = useAnime();
 
@@ -61,28 +61,25 @@ const currentAnime = computed(() => store.getCurrentAnime)
 
 const allAnime = computed(() => store.anime)
 
-const modifiedPlayerLink = ref(`${currentAnime.value?.link}?hide_selectors=true`);
+const animeTranslation = ref(currentAnime.value?.translation)
 
-const files = ref<Array<string>>();
+const modifiedPlayerLink = ref(`${currentAnime.value?.link}?hide_selectors=true`)
+const playerLink = computed(() => 
+{  
+  return modifiedPlayerLink.value
+})
+
 const animeEpisodes = computed(() => 
 {
   return checkValidIsSerial(currentAnime.value) ? currentAnime.value?.seasons[currentAnime.value.last_season].episodes as Episode[] : null
 })
- 
-function getEpisodeMedia(imgLink: string)
+
+function changeTranslation(anime: AnimeDetail)
 {
-  const resp = $fetch(imgLink, {headers: {
-    'Accept': 'application/json', // This is set on request
-    'Content-Type': 'application/json', // This is set on request
-    'X-CSRF-Token': 'abcdefghijklmnop', // This is set on request
-    'Cache': 'no-cache', // This is set on request
-      credentials: 'same-origin', // This is set on request
-    'Cookie': 'csrftoken=abcdefghijklmnop' // This is missing from request
-  } });
-  files.value?.push()
-} 
-
-
+  store.setCurrentAnime(anime);
+  changePlayerLink(anime.link);
+  animeTranslation.value = anime.translation;
+}
 
 // Проверяет есть ли у аниме сезоны,
 // если нет значит это фильм, ова или еще какая приблуда
@@ -101,18 +98,8 @@ function checkValidIsSerial(anime: AnimeDetail | null)
   return false
 }
 
-// Меняем текущее активное аниме
-// к примеру при смене озвучки
-
-function changeCurrentAnime(anime: AnimeDetail)
-{
-  store.setCurrentAnime(anime)
-  
-  changePlayerLink(anime.link)
-}
-
 function changePlayerLink(link: string)
-{
+{ 
   modifiedPlayerLink.value = `${link}?hide_selectors=true`
 }
 

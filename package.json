@@ -9,18 +9,23 @@
   },
   "devDependencies": {
     "@types/lodash.debounce": "^4.0.7",
+    "@types/node": "^18.16.3",
     "nuxt": "^3.0.0",
-    "nuxt-icon": "^0.2.11"
+    "nuxt-icon": "^0.2.11",
+    "sass-loader": "10"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.6",
+    "@kyvg/vue3-notification": "^2.9.0",
+    "@pinia/nuxt": "^0.4.9",
     "cookie-universal-nuxt": "^2.2.2",
     "lodash.debounce": "^4.0.8",
     "nuxt-swiper": "^1.0.0",
-    "pinia": "^2.0.30",
-    "sass": "^1.57.1",
+    "pinia": "^2.0.35",
+    "sass": "^1.62.1",
     "swiper": "^9.0.4",
+    "vee-validate": "^4.8.6",
     "vue-click-outside": "^1.1.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "yup": "^1.1.1"
   }
 }

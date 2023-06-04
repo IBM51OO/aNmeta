@@ -1,5 +1,5 @@
 <template>
-    <div class="anime-wrapper">
+    <div class="anime-wrapper" v-if="!loading">
        <div class="container">
         <div class="anime">
             <div class="anime__left">
@@ -33,12 +33,14 @@
                                 </div>
                             </div>
                         </TransitionGroup>
-                        <button class="anime-related__show-more" v-if="store.getRelatedAnime.length > 5 && !isAllRelated" @click="isAllRelated = true">
-                            Показать еще
-                        </button>
-                        <button class="anime-related__hide-more" v-else @click="isAllRelated = false">
-                            Скрыть
-                        </button>
+                        <div class="anime-related__controls" v-if="store.getRelatedAnime.length > 5">
+                            <button class="anime-related__show-more" v-if="!isAllRelated" @click="showMore">
+                                Показать еще
+                            </button>
+                            <button class="anime-related__hide-more" v-else @click="hideMore">
+                                Скрыть
+                            </button>
+                        </div>
                     </div>
                     <div class="anime-top">
                         <div class="anime-top__header-panel">
@@ -60,115 +62,46 @@
                         <div class="anime-top__list">
                             <div class="anime-top__first-place-item">
                                 <div class="first-place-item__img">
-                                    <img src="../assets/img/3.jpg" alt="">
+                                    <img :src="animeTopics.topByDay[0].poster" alt="">
                                 </div>
                                 <div class="first-place-item__content">
                                     <div class="place-number">
                                         <span>1</span>
                                     </div>
                                     <div class="first-place-item__info">
-                                        <p class="first-place-item__name">
-                                            Человек-бензопила
-                                        </p>
+                                        <NuxtLink class="first-place-item__name" :to="'/anime/'+animeTopics.topByDay[0].id">
+                                            {{ animeTopics.topByDay[0].title }}
+                                        </NuxtLink>
                                         <div class="first-place-item__viewers">
                                             <Icon name="EyeIcon" size="16" />
-                                            <span>231,231</span>
+                                            <span>{{ animeTopics.topByDay[0].countDay }}</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="place-item">
+                            <div class="place-item" v-for="(topAnime,index) in animeTopics.topByDay.slice(1, animeTopics.topByDay.length)" :key="topAnime.id+'top'">
                                 <div class="place-item__number">
                                     <div class="place-box">
-                                        2
+                                        {{index + 2}}
                                     </div>
                                 </div>
                                 <div class="place-item__title">
                                     <div class="title__img">
-                                        <img src="../assets/img/3.jpg" alt="">
+                                        <img :src="topAnime.poster" alt="">
                                     </div>
                                     <div class="title__info">
-                                        <p class="title-name">
-                                            Человек-бензопила
-                                        </p>
+                                        <NuxtLink class="title-name" :to="'/anime/'+topAnime.id">
+                                            {{ topAnime.title }}
+                                        </NuxtLink>
                                         <div class="title-viewers">
                                             <Icon name="EyeIcon" size="14"/>
                                             <span>
-                                                423,212
+                                                {{topAnime.countDay}}
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="place-item">
-                                <div class="place-item__number">
-                                    <div class="place-box">
-                                        2
-                                    </div>
-                                </div>
-                                <div class="place-item__title">
-                                    <div class="title__img">
-                                        <img src="../assets/img/3.jpg" alt="">
-                                    </div>
-                                    <div class="title__info">
-                                        <p class="title-name">
-                                            Человек-бензопила
-                                        </p>
-                                        <div class="title-viewers">
-                                            <Icon name="EyeIcon" size="14"/>
-                                            <span>
-                                                423,212
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="place-item">
-                                <div class="place-item__number">
-                                    <div class="place-box">
-                                        2
-                                    </div>
-                                </div>
-                                <div class="place-item__title">
-                                    <div class="title__img">
-                                        <img src="../assets/img/3.jpg" alt="">
-                                    </div>
-                                    <div class="title__info">
-                                        <p class="title-name">
-                                            Человек-бензопила
-                                        </p>
-                                        <div class="title-viewers">
-                                            <Icon name="EyeIcon" size="14"/>
-                                            <span>
-                                                423,212
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="place-item">
-                                <div class="place-item__number">
-                                    <div class="place-box">
-                                        2
-                                    </div>
-                                </div>
-                                <div class="place-item__title">
-                                    <div class="title__img">
-                                        <img src="../assets/img/3.jpg" alt="">
-                                    </div>
-                                    <div class="title__info">
-                                        <p class="title-name">
-                                            Человек-бензопила
-                                        </p>
-                                        <div class="title-viewers">
-                                            <Icon name="EyeIcon" size="14"/>
-                                            <span>
-                                                423,212
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            </div>  
                         </div>
                     </div>
                 </div>
@@ -184,29 +117,36 @@ import AnimeDescription from "@/modules/anime/components/AnimeDescription.vue";
 import AnimeDetail from "../types/AnimeDetail";
 import RelatedAnime from "../types/RelatedAnime";
 import { useAnime } from "../store/animeStore";
+import AnimeTopics from "../types/AnimeTopics";
+
 
 const props = defineProps<{
-    loaded: boolean
+    loading: boolean,
+    animeTopics: AnimeTopics
 }>()
 
 const isAllRelated = ref(false);
 
 const store = useAnime();
+
+
+
 /*
 **  содержит скрытые связанные аниме
 **  которые не уместились
 */
-const filteredRelatedAnime = computed(() =>
+
+const filteredRelatedAnime = ref(store.getRelatedAnime.slice(0, 5));
+function showMore()
 {
-    if(isAllRelated.value)
-    {
-        return store.getRelatedAnime
-    }
-    else
-    {
-        return store.getRelatedAnime.length > 5 ? store.getRelatedAnime.slice(0, 5) : store.getRelatedAnime
-    }
-})
+    isAllRelated.value = true;
+    filteredRelatedAnime.value = store.getRelatedAnime;
+}
+function hideMore()
+{
+    isAllRelated.value = false;
+    filteredRelatedAnime.value = store.getRelatedAnime.slice(0, 5)
+}
 
 </script>
 
@@ -408,9 +348,12 @@ const filteredRelatedAnime = computed(() =>
                                     font-family: 'Open Sans';
                                     font-weight: 600;
                                     margin-left: 10px;
+                                    
 
                                     .first-place-item__name
                                     {
+                                        color: #fff;
+                                        text-decoration: none;
                                         margin: 0;
                                     }
 
@@ -437,13 +380,14 @@ const filteredRelatedAnime = computed(() =>
                                     border: none;
                                     font-family: 'Poppins';
                                     background: #fff;
-                                    height: 40px;
-                                    width: 40px;
+                                    height: 42px;
+                                    width: 42px;
                                     font-weight: 600;
                                     display: flex;
                                     align-items: center;
                                     justify-content: center;
                                     border-radius: 5px;
+                                    float: 0 0 auto;
                                     span
                                     {
                                         font-size: 24px;
@@ -468,6 +412,7 @@ const filteredRelatedAnime = computed(() =>
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
+                                flex: 0 0 auto;
                                 
                                 .place-box
                                 {
@@ -481,6 +426,9 @@ const filteredRelatedAnime = computed(() =>
                                 margin-left: 10px;
                                 .title__img
                                 {
+                                    height: 60px;
+                                    width: 46px;
+                                    flex: 0 0 auto;
                                     img
                                     {
                                         height: 60px;
@@ -493,11 +441,12 @@ const filteredRelatedAnime = computed(() =>
                                     margin-left: 10px;
                                     .title-name
                                     {
+                                        text-decoration: none;
                                         font-family: 'Open Sans';
                                         color: #ababab;
                                         font-size: 14px;
                                         font-weight: 500;
-                                        margin: 0 0 10px 0;
+                                        margin: 0;
                                     }
                                     .title-viewers
                                     {
@@ -510,6 +459,7 @@ const filteredRelatedAnime = computed(() =>
                                         {
                                             font-family: 'Poppins';
                                             font-size: 14px;
+                                            margin-left: 5px;
                                         }
                                     }
                                 }

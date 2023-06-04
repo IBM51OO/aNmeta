@@ -1,28 +1,36 @@
-import { useMyFetch } from "@/composables/useMyFetch";
-import RelatedAnime from "../../../anime/types/RelatedAnime"
 export default 
 {
-    getAnimeByLink(titleLink: string)
+    // getAnimeByLink(titleLink: string)
+    // {   
+    //     const token = 'b366fa83b760db1dc05b3c7d5f70331e'
+    //     const with_material_data = 'true'
+
+    //     const with_episodes_data= 'true'
+    //     const worldart_link = titleLink;
+
+    //     const { data } = useAsyncData('anime', () => $fetch('https://kodikapi.com/search', 
+    //     {
+    //         params: {token, with_material_data, with_episodes_data, worldart_link},
+    //     }));
+        
+    //     return data;
+    // },
+
+    async getAnimeFromKodik(id: number)
     {   
-        const token = 'b366fa83b760db1dc05b3c7d5f70331e'
-        const with_material_data = 'true'
-
-        const with_episodes_data= 'true'
-        const worldart_link = titleLink;
-
-        return $fetch('https://kodikapi.com/search', 
-            {
-                params: {token, with_material_data, with_episodes_data, worldart_link},
-            });
+        const { data } = await useAsyncData('animeByDb', () => $fetch(`http://anime/api/anime/${id}`))
+        return data
     },
 
-    getAnimeFromDb(id: number)
-    {   
-        return $fetch(`http://anime/api/anime/${id}`)
-    },
-
-    getRelatedAnimeList(id: number)
+    async getRelatedAnimeList(id: number)
     {
-        return $fetch(`http://anime/api/anime/relation/${id}`);
-    }
+        const { data } = await useAsyncData('relatedAnime', () => $fetch(`http://anime/api/anime/relation/${id}`))
+        return data;
+    },
+
+    async getAnimeTopics()
+    {   
+        const { data } = await useAsyncData('animeTopics', () => $fetch('http://anime/api/topics'))
+        return data
+    },
 };

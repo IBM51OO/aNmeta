@@ -1,6 +1,8 @@
 <template>
     <section class="anime-detail">
-        <AnimeDetailContent :loaded="loaded" v-if="loaded"/>
+        
+
+        <AnimeDetailContent :loading="loading" :animeTopics="animeTopics" v-if="!loading" />
         <AnimePlayerSkeleton v-else />
     </section>
 </template>
@@ -9,30 +11,39 @@
 import AnimePlayerSkeleton from "@/modules/anime/ui/AnimePlayerSkeleton.vue"
 import AnimeDetailContent from "@/modules/anime/components/AnimeDetailContent.vue";
 import { useAnime } from "@/modules/anime/store/animeStore";
-import AnimeDetail from "../types/AnimeDetail";
-import RelatedAnime from "../types/RelatedAnime";
+import { useGlobalStore } from "@/store/globalStore";
 
 const store = useAnime();
 const router = useRoute();
-const anime = computed(() => store.anime[0]);
 
-const loaded = ref(false);
+const globalStore = useGlobalStore();
+globalStore.setLoading(true);
 
-async function initPage()
+const animeTopics = ref();
+
+const loading = computed(() => 
 {
-    // await store.fetchAnimeFromDbById(Number(router.params.id))
-    // await store.fetchRelatedAnimeList(Number(router.params.id))
-    await store.fetchAnime('http://www.world-art.ru/animation/animation.php?id=8026')
-
-    store.setCurrentAnime(anime.value)
-}
-
-initPage().then(() =>
-{
-    loaded.value = true
+    return globalStore.isLoading;
 });
+
+globalStore.setLoading(true)
+
+await store.fetchAnime(Number(router.params.id))
+await store.fetchRelatedAnimeList(Number(router.params.id))
+animeTopics.value = await store.fetchAnimeTopics()
+
+onMounted(() => 
+{ 
+    globalStore.setLoading(false);
+})
+
+
 
 </script>
 
 <style lang="scss">
+.user
+{
+    color: black;
+}
 </style>

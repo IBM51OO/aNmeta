@@ -1,11 +1,11 @@
 <template>
     <div class="search" v-click-outside="() => searchStatus = false">
-        <div class="main__search">
+        <div class="main__search" :class="{'active': searchStatus}">
             <input type="text" placeholder="Поиск..." v-model="searchQuery" @input="handleInputDebounce" @focus="searchStatus = true"/>
             <div class="search-icon">
                 <Icon name="SearchIcon" size="16" />
             </div>
-            <div class="search__results" v-show="searchStatus && searchResult?.length">
+            <div class="search__results" v-show="searchStatus && searchResult?.length" @mouseenter="setFocus($event)">
                 <div class="results-item" v-for="searchItem in searchResult" :key="searchItem.id" >
                     <NuxtLink :to="'/anime/'+searchItem.id" class="result-item__link">
                         <img :src="searchItem.poster" alt="">
@@ -37,8 +37,6 @@ import AnimeDetailDb from '~/modules/anime/types/AnimeDetailDb'
 const searchResult = ref<Array<AnimeDetailDb>>()
 const searchStatus = ref(false);
 
-const cok = useCookie('cok',{sameSite: 'none'})
-
 function fetchSearch(searchQuery: string)
 {
     searchStatus.value = true;
@@ -51,6 +49,13 @@ function fetchSearch(searchQuery: string)
 function handleInput() 
 {
     fetchSearch(searchQuery.value)
+}
+
+// Исправляет ошибку потери фокуса при скроле результатов поиска
+function setFocus(e: MouseEvent)
+{
+    const el = e.target as HTMLElement
+    el.focus();
 }
 
 const handleInputDebounce = debounce(handleInput, 500)
@@ -82,6 +87,10 @@ const searchQuery = ref('')
 .search
 {
     width: 280px;
+    .active 
+    {
+        border: 1px solid #501b19;
+    }
     .search__results
     {
         position: absolute;
@@ -95,6 +104,7 @@ const searchQuery = ref('')
         overflow-y: scroll;
         scrollbar-color: #3b3a41 transparent;
         scrollbar-width: thin;
+        z-index: 3;
 
         &::-webkit-scrollbar {
             position: relative;

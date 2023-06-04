@@ -8,6 +8,7 @@ interface AnimeDetail
     year: string,
     kinopoisk_id: number,
     imdb_id: number,
+    episodes?: Episode[]
     worldart_link: string,
     link: string,
     last_season: number,
@@ -47,5 +48,5 @@ interface Episode
     screenshots: Array<string>
 }
 
-export { Episode }
+export { Episode, Translation }
 export default AnimeDetail;

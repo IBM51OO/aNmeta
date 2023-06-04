@@ -3,8 +3,8 @@ import { resolve, join } from 'pathe'
 import type { Nuxt } from '@nuxt/schema'
 
 export default defineNuxtModule({
-  name: 'auth-module',
-  configKey: 'auth-module',
+  name: 'user-module',
+  configKey: 'user-module',
   setup (options: any, nuxt: Nuxt) {
 
     // Auto register components
@@ -22,9 +22,19 @@ export default defineNuxtModule({
     // Auto register pages
     nuxt.hook('pages:extend', (pages) => {
       pages.push({
-        name: 'auth-module',
+        name: 'user-register',
         path: '/register',
-        file: resolve(__dirname, './pages/RegisterPage.vue')
+        file: resolve(__dirname, './pages/RegisterPage.vue'),
+      }),
+      pages.push({
+        name: 'user-login',
+        path: '/login',
+        file: resolve(__dirname, './pages/LoginPage.vue'),
+      }),
+      pages.push({
+        name: 'user-profile',
+        path: '/profile',
+        file: resolve(__dirname, './pages/UserProfilePage.vue'),
       })
     })
 

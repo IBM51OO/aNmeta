@@ -8,6 +8,9 @@ interface AnimeDetailDb
     title: string,
     titleEn: string,
     titleLink: string,
-    year: string
+    year: string,
+    countDay: number,
+    countWeek: number,
+    countMonth: number,
 }
 export default AnimeDetailDb;
