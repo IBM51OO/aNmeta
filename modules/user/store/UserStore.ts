@@ -1,17 +1,19 @@
 import { defineStore } from "pinia";
 import api from "~/api/repositories/api";
-import User, { LoginResponse, UserLogin, UserRegister } from "@/modules/user/types/IUser";
+import User, { LoginResponse, UserLogin, UserRegister, UserStatisticEdit } from "@/modules/user/types/IUser";
 
 interface UserStore 
 {
   user: User | undefined
   isAuth: boolean
+  currentUserProfile: User | undefined
 }
 
 export const useUserStore = defineStore('user', { 
     state: (): UserStore  => 
     ({
         user: undefined,
+        currentUserProfile: [],
         isAuth: false
     }),
     getters: 
@@ -25,6 +27,11 @@ export const useUserStore = defineStore('user', {
         {
             return this.user;
         },
+
+        getCurrentUserProfile(): User | undefined
+        {
+            return this.currentUserProfile;
+        }
     },
     actions: 
     {
@@ -38,6 +45,11 @@ export const useUserStore = defineStore('user', {
             this.isAuth = status
         },
 
+        setCurUser(user: User | undefined)
+        {
+            this.currentUserProfile = user
+        },
+
         setUserToken(data: {access_token: string} | null)
         {
             const config = useRuntimeConfig();
@@ -48,16 +60,41 @@ export const useUserStore = defineStore('user', {
             })
             cookie.value = cookie.value || data && data.access_token;
         },
-        
+
+        async updateUser(user: User, id: number)
+        {
+            await api.userRepository.update(user, id).then((data) => 
+            {
+                this.setUser(data as User)
+            })
+        },
+        async uploadFile(formData: any)
+        {            
+            return (await api.userRepository.upload(formData)).value
+        },
+        async fetchUserById(id: number) 
+        {            
+            await api.userRepository.userById(id).then((data) => 
+            {
+                this.setCurUser(data)
+            })
+        },
         async fetchUser() 
         {
             await api.userRepository.user().then((data) => 
             {                
-                this.setUser(data.value as User)
+                this.setUser(data as User)
                 this.setAuth(true);
             })
         },
-
+        async fetchUserAnimeList(userId: number)
+        {
+           return await api.userRepository.getUserAnimeList(userId)
+        },
+        async updateUserTopicTitle(title: UserStatisticEdit, bookmarkId: number)
+        {            
+            await api.userRepository.updateUserAnimeList(title, bookmarkId)
+        },
         async login(payload: UserLogin) 
         {
             await api.userRepository.login(payload).then((data) => 

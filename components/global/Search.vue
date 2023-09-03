@@ -7,7 +7,7 @@
             </div>
             <div class="search__results" v-show="searchStatus && searchResult?.length" @mouseenter="setFocus($event)">
                 <div class="results-item" v-for="searchItem in searchResult" :key="searchItem.id" >
-                    <NuxtLink :to="'/anime/'+searchItem.id" class="result-item__link">
+                    <NuxtLink @click="searchStatus = false" :to="'/anime/'+searchItem.id" class="result-item__link">
                         <img :src="searchItem.poster" alt="">
                         <div class="results-item__anime-info">
                             <p class="anime-info__name">
@@ -69,7 +69,7 @@ const searchQuery = ref('')
 {
     position: relative;
     border-radius: 10px;
-    background: #16151a;
+    background: #2a2a2a;
     input 
     {
         color: #fff;
@@ -100,7 +100,7 @@ const searchQuery = ref('')
         border-radius: 10px;
         box-sizing: border-box;
         padding: 15px 0;
-        height: 400px;
+        max-height: 400px;
         overflow-y: scroll;
         scrollbar-color: #3b3a41 transparent;
         scrollbar-width: thin;

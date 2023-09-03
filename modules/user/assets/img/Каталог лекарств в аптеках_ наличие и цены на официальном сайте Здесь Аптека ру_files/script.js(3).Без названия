@@ -1,0 +1,20 @@
+$('#empty_search').jqm();
+
+
+// меняем стандартный аплоадер
+BX.ready(function(){
+    const img = '/local/templates/zdesapteka2020/components/bitrix/form.result.new/pre_order/images/ajax-loader.gif';
+    BX.showWait = function(node, msg) {
+        $('.wrapper_submit label').append('<img src="'+img+'" alt="" >');
+        $('.wrapper_submit input').css('display', 'none');
+    };
+    BX.closeWait = function(node, obMsg) {
+        $('#wrapper_submit img').remove();
+        $('.wrapper_submit input').css('display', 'block');
+    };
+});
+
+// Подставляем значение (город) в input
+$('#USER_REGION').change(function (){
+    $(this).siblings('input').val($(this).val());
+});

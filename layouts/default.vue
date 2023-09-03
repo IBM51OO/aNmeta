@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<CustomNotification />
+		<CustomNotification v-if="false" />
 		<header class="header">
 			<div class="container">
 				<div class="header-navigation">
@@ -8,26 +8,44 @@
 						<nav class="nav header__nav">
 							<ul class="nav__list">
 								<li class="nav__item"><NuxtLink to="/">Главная</NuxtLink></li>
-								<li class="nav__item"><NuxtLink to="/register">Аниме</NuxtLink></li>
+								<li class="nav__item"><NuxtLink to="/catalogue">Аниме</NuxtLink></li>
 								<li class="nav__item"><NuxtLink to="/register">Календарь релизов</NuxtLink></li>
-								<li class="nav__item" v-if="!userStore.isUserAuth"><NuxtLink to="/register">Рег</NuxtLink></li>
-								<li class="nav__item" v-if="!userStore.isUserAuth"><NuxtLink to="/login">Войти</NuxtLink></li>
+								
 							</ul>
 						</nav>
-						<Search />
-					</div>
-					<div class="dropdown" v-if="userStore.isUserAuth">
-						<button class="dropbtn" @mouseenter="dropDownHovered = true" @mouseleave="dropDownHovered = false">
-							<div class="user">
-								<div class="user-avatar">
-									<img src="@/static/rnUkxaCldII.jpg" alt="static" class="user-avatar__img">
+						<div class="nav__item-right">
+							<Search />
+							<div class="nav__item-auth">
+								<li class="nav__item" v-if="!userStore.isUserAuth"><NuxtLink to="/register" class="nav__item-register">Регистрация</NuxtLink></li>
+								<li class="nav__item" v-if="!userStore.isUserAuth"><NuxtLink to="/login" class="nav__item-login">Войти</NuxtLink></li>
+							</div>
+							<div class="dropdown" v-if="user && userStore.isUserAuth">
+								<div class="user" @click.stop="toggleMenu">
+									<div class="user-avatar">
+										<img src="/rnUkxaCldII.jpg" alt="static" class="user-avatar__img" v-if="!user.avatar">
+										<img :src="user.avatar" alt="static" class="user-avatar__img" v-else>
+									</div>
+								</div>
+								<div class="dropdown-content" v-if="profileMenuVisible" v-click-outside="toggleMenu">
+									<div class="profile-preview_small" :style="{'background': `url(${user.backgroundAvatar})`}">
+										<div class="profile-preview__user">
+											<div class="user-avatar">
+												<img src="/rnUkxaCldII.jpg" alt="" v-if="!user.avatar">
+												<img :src="user.avatar" alt="" v-else>
+											</div>
+											<div class="user-name">
+												{{user?.name}}
+											</div>
+										</div>
+									</div>
+									<div class="profile-menu">
+										<NuxtLink @click="toggleMenu" :to="`/profile/${currentUser?.id}`" ><Icon name="ProfileIcon" size="20" /><span>Профиль</span></NuxtLink>
+										<NuxtLink><Icon name="BookmarkIcon" size="20" /><span>Мои коллекции</span></NuxtLink>
+										<NuxtLink @click="toggleMenu" to="/settings"><Icon name="SettingsIcon" size="20" /><span>Настройки</span></NuxtLink>
+										<NuxtLink><Icon name="LogoutIcon" size="20" /><span>Выход</span></NuxtLink>
+									</div>
 								</div>
 							</div>
-						</button>
-						<div class="dropdown-content" :class="{'dropdown-hovered': dropDownHovered}" @mouseenter="dropDownHovered = true" @mouseleave="dropDownHovered = false">
-							<NuxtLink to="/profile" class="dropdown-link">Профиль</NuxtLink>
-							<NuxtLink to="/settings" class="dropdown-link">Настройки</NuxtLink>
-							<NuxtLink @click="logout" class="dropdown-link">Выход</NuxtLink>
 						</div>
 					</div>
 				</div>
@@ -47,9 +65,17 @@ const dropDownHovered = ref(false)
 const user = computed(() => userStore.getUser)
 const authCookie = useCookie('access_token')
 
+const profileMenuVisible = ref(false);
+
+
 if(!userStore.isUserAuth && authCookie.value)
 {
 	userStore.fetchUser();
+}
+const currentUser = computed(() => userStore.getUser);
+function toggleMenu()
+{	
+	profileMenuVisible.value = !profileMenuVisible.value
 }
 
 function logout()
@@ -61,6 +87,7 @@ function logout()
 
 </script>
 <style lang="scss">
+
 .header 
 {
 	position: fixed;
@@ -68,30 +95,34 @@ function logout()
 	left: 0;
 	width: 100%;
 	z-index: 3;
-	height: 60px;
-	background: #1E1E1E;
+	height: $main-menu-height;
+	background: #101014;
 	.dropdown {
 		float: left;
 		overflow: hidden;
-		.user
+		
+	}
+	.user
+	{
+		display: flex;
+		cursor: pointer;
+		align-items: center;
+		.user-avatar
 		{
-			display: flex;
-			align-items: center;
-			.user-avatar
+			.user-avatar__img
 			{
-				flex: 0 0 auto;
-				.user-avatar__img
-				{
-					border-radius: 50%;
-					object-fit: cover;
-					height: 35px;
-					width: 35px;
-				}
-				margin-right: 10px;
+				border: 1px solid ;
+				border-radius: 50%;
+				object-fit: cover;
+				height: 40px;
+				width: 40px;
 			}
 		}
 	}
-
+	.dropdown
+	{
+		margin-left: 10px;
+	}
 	.dropdown .dropbtn {
 		font-size: 16px;  
 		border: none;
@@ -104,36 +135,78 @@ function logout()
 		margin: 0;
 	}
 	.dropdown-content {
-		visibility: hidden;
-		opacity: 0;
-		position: absolute;
-		background-color: #f9f9f9;
+
+		border-radius: 10px;
+		position: fixed;
+		background-color: #202024;
 		transition: 300ms all ease;
-		min-width: 160px;
+		min-width: 260px;
 		transition: 200ms all ease-in-out;
 		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 		z-index: 1;
+		right: 5px;
+		padding-bottom: 10px;
 		.dropdown-link
 		{
 			cursor: pointer	;
 		}
-	}
-	.dropdown-hovered
-	{
-		visibility: visible;
-		opacity: 1;
+		.profile-preview_small
+		{
+			background-size: cover !important;
+			background-repeat: no-repeat !important;
+			border-radius: 10px 10px 0 0	;
+			-webkit-box-shadow: 0px -80px 68px -9px rgba(0, 0, 0, 0.72) inset;
+			-moz-box-shadow: 0px -80px 68px -9px rgba(0, 0, 0, 0.72) inset;
+			box-shadow: 0px -80px 68px -9px rgba(0, 0, 0, 0.72) inset;
+			.profile-preview__user
+			{
+				display: flex;
+				align-items: center;
+				padding: 10px 20px;
+				.user-avatar
+				{
+					img
+					{
+						height: 40px;
+						width: 40px;
+						object-fit: cover;
+						border-radius: 50%;
+					}
+				}
+				.user-name
+				{
+					font-family: 'Inter';
+					font-weight: 500;
+					color: #e6e6ea;
+					margin-left: 10px;
+				}
+			}
+		}
 	}
 	.dropdown-content a {
 		float: none;
-		color: black;
-		padding: 12px 16px;
+		font-family: 'Inter';
+		color: #e6e6ea;
+		display: flex;
+		cursor: pointer;
+		align-items: center;
+		padding: 10px 10px;
+		font-weight: 500;
+		border-radius: 6px;
+		margin: 0 10px;
 		text-decoration: none;
 		display: block;
 		text-align: left;
+
+		span
+		{
+			font-size: 14px;
+			margin-left: 10px;
+		}
 	}
 	
 	.dropdown-content a:hover {
-		background-color: #ddd;
+		background-color: #404044;
 	}
 	
 	.dropdown:hover .dropdown-content {
@@ -144,7 +217,7 @@ function logout()
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 60px;
+		height: 80px;
 	}
 	.header-navigation__main 
 	{
@@ -172,6 +245,7 @@ function logout()
 					transition: color .2s linear,background-color .2s linear;
 					
 				}
+				
 			}
 			.nav__item:hover
 			{
@@ -197,6 +271,42 @@ function logout()
 			.nav__item:not(:last-child) 
 			{
 				margin-right: 20px;
+			}
+		}
+		.nav__item-right
+		{
+			display: flex;
+			align-items: center;
+			.nav__item-auth
+			{
+				display: flex;
+				align-items: center;
+				.nav__item
+				{
+					list-style-type: none;
+				}
+			}
+			.nav__item-login,.nav__item-register
+			{
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+				padding-inline: 15px;
+				background: #292929;
+				font-family: 'Open Sans';
+				font-weight: 700;
+				font-size: 14px;
+				color: #fff;
+				text-decoration: none;
+				height: 35px;
+				list-style-type: none;
+				border-radius: 8px;
+			}
+			.nav__item-register
+			{
+				margin-inline: 15px;
+				background: #fff;
+				color: #292929;
 			}
 		}
 	}

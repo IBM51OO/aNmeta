@@ -1,6 +1,6 @@
 <template>
-    <div @click.stop="toggle">
-        <slot />
+    <div class="context-menu-spawner" ref="contextMenu" @click.stop="toggle">
+            <slot />
         <Teleport to="body">
             <div>
                 <transition mode="out-in">
@@ -8,6 +8,7 @@
                         v-click-outside="() => isOpen = false"
                         v-if="isOpen"
                         :style="getStyles"
+                        @close="close"
                     >
                         <slot name="menu" />
                     </ContextMenu>
@@ -17,32 +18,32 @@
     </div>
 </template>
 <script setup lang="ts">
+
 import ContextMenu from '@/shared/common/components/ContextMenu.vue'
 
 const isOpen = ref(false)
-const slots = useSlots();
+const contextMenu = ref()
+
 
 function toggle() 
 {
     isOpen.value = !isOpen.value;
-    console.log(spawner);
-    
 }
-const spawner: ComputedRef<HTMLElement> = computed(() => 
+function close()
 {
-    const slot = slots as any
-    return slot.default()[0].el
-})
-const getSpawnerRect: ComputedRef<DOMRect> = computed(() => 
+    isOpen.value = false;
+}
+const getSpawnerRect = () => 
 {
-    return spawner.value.getBoundingClientRect();
-})
+    const el = contextMenu.value as HTMLElement
+    return el ? el.getBoundingClientRect() : null
+}
 
 
 const getStyles = computed(() => {
-    if (!spawner.value) return {};
+    const rect = getSpawnerRect();
+    if(!rect) return {};
 
-    const rect = getSpawnerRect.value;
     const top = rect.top + window.scrollY;
     const left = rect.left + window.scrollX + rect.width;
 

@@ -13,7 +13,7 @@
             </div>
             <div class="sign-up-banner__info">
                 <div class="info__header">
-                    <h2>Присоединяйтесь !</h2>
+                    <h2>Присоединяйтесь!</h2>
                     <div class="info__header__label">Все еще не зарегистрированы? У нас для тебя много классных фич</div>
                     <div class="info__feature-list">
                         <div class="release-promo promo-item">
@@ -29,9 +29,11 @@
                             <span>Смотри где угодно</span>
                         </div>
                     </div>
-                    <button class="info__watch-btn btn">
-                        Создать аккаунт
-                    </button>
+                    <NuxtLink to="/register">
+                        <button class="info__watch-btn btn">
+                            Создать аккаунт
+                        </button>
+                    </NuxtLink>
                 </div>
             </div>
         </div>

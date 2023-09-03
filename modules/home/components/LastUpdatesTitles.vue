@@ -1,13 +1,15 @@
 <template>
     <div class="container">
         <div class="last-updates">
-            <div class="last-updates__label">
-                <h2>Популярные новинки</h2>
-            </div>
-            <div class="last-updates__show-all">
-                <span>
-                    Смотреть все
-                </span>
+            <div class="row">
+                <div class="last-updates__label">
+                    <h2>Популярные новинки</h2>
+                </div>
+                <div class="last-updates__show-all">
+                    <span>
+                        Смотреть все
+                    </span>
+                </div>
             </div>
             <div class="last-updates__list">
                 <Swiper class="last-updates__slider" :slides-per-view="7" :space-between="30">
@@ -341,29 +343,25 @@
 <style lang="scss">
 .last-updates
 {
+    margin-top: 30px;
+    .row
+    {
+        justify-content: space-between;
+    }
     .last-updates__label
     {
         position: relative;
         h2
         {
             margin: 0;
-            font-family: 'Open Sans';
+            font-family: 'Century Gothic';
             font-size: 24px;
-            color: #B7B7B7;
+            color: #fff;
             font-weight: 600;
             margin-bottom: 25px;
         }
     }
-    .last-updates__label::before
-    {
-        content: '';
-        display: block;
-        position: absolute;
-        width: 70px;
-        height: 5px;
-        background: #E1AC28;
-        bottom: -15px;
-    }
+
     .last-updates__show-all
     {
         color: #BDBDBD;
@@ -388,13 +386,13 @@
                     object-fit: cover;
                     transition: .3s all ease;
                     overflow: hidden;
-                    height: 240px;
+                    height: 260px;
                 }
                 .movie__poster
                 {
                     position: relative;
                     cursor: pointer;
-                    height: 240px;
+                    height: 260px;
                     overflow: hidden;
                     border-radius: 10px;
 

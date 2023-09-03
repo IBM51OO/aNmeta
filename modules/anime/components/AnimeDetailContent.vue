@@ -122,12 +122,13 @@ import AnimeTopics from "../types/AnimeTopics";
 
 const props = defineProps<{
     loading: boolean,
-    animeTopics: AnimeTopics
 }>()
 
 const isAllRelated = ref(false);
+const animeStore = useAnime();
 
 const store = useAnime();
+const animeTopics = computed(() => animeStore.getTopics)
 
 
 

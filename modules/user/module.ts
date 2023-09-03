@@ -33,8 +33,13 @@ export default defineNuxtModule({
       }),
       pages.push({
         name: 'user-profile',
-        path: '/profile',
+        path: '/profile/:id',
         file: resolve(__dirname, './pages/UserProfilePage.vue'),
+      })
+      pages.push({
+        name: 'user-settings',
+        path: '/settings',
+        file: resolve(__dirname, './pages/SettingsPage.vue'),
       })
     })
 

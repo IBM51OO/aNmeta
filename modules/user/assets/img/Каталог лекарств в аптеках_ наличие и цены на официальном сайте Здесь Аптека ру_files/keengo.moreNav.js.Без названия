@@ -1,0 +1,57 @@
+$.fn.moreNav = function() {
+	let nav = $(this);
+	function setMoreNav() {
+		let nav_width = nav.outerWidth()-64,
+			nav_elem_width = 0,
+			more_link = $('<div class="bookmarks-item"><li class="more"><a href="/poisk-lekarstv/" id="aMore" class="aBookmarksMore">Ещё</a>' +
+				'<svg width="6" height="100%" viewBox="0 0 6 9" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+				'<path d="M1.49988 0L0.442383 1.0575L3.87738 4.5L0.442383 7.9425L1.49988 9L5.99988 4.5L1.49988 0Z" fill="#42515C"/>' +
+				'</svg>' +
+				'<ul style="display:none;" class="children"></ul>' +
+				'</li>' +
+				'</div>'
+			),
+			class_nav_item = 'nav-item',
+			class_nav_item_more = 'nav-item-more';
+
+		if( nav.find('.more').length > 0 ) {
+			nav.append(nav.find('.more ul li'));
+			nav.find('.more').remove();
+		}
+
+		$.each(nav.find('li'), function(i, elem){
+			let elem_width = $(elem).outerWidth()+32;
+
+			nav_elem_width += elem_width;
+		});
+
+		if( nav_elem_width > nav_width ) {
+			nav.append(more_link);
+			nav_width -= more_link.outerWidth();
+
+			nav_elem_width = 0;
+
+			$.each(nav.find('li'), function(i, elem){
+				let elem_width = $(elem).outerWidth();
+
+				nav_elem_width += elem_width;
+
+				if( !$(elem).is('.more') ) {
+
+					if( nav_elem_width < nav_width ) {
+						$(elem).addClass(class_nav_item).removeClass(class_nav_item_more);
+					} else {
+						$(elem).addClass(class_nav_item_more).removeClass(class_nav_item);
+					}
+				}
+			});
+		}
+		more_link.find('ul').append($('.' + class_nav_item_more));
+
+	}
+	setMoreNav();
+
+	$(window).resize(function(){
+		setMoreNav();
+	});
+};

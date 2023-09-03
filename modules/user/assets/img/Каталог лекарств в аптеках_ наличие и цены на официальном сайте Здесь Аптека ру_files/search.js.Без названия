@@ -1,0 +1,30 @@
+$(document).ready(function() {
+
+    $('.myZdSelect').flexdatalist({
+        minLength: 2,
+        visibleProperties: ["thumb", "title"],
+        searchIn: 'title',
+        searchDisabled: true,
+        maxShownResults: 10,
+        searchDelay: 400,
+        noResultsText: '',
+        url: '/ajax/zd2020/search_autocomplete.php'
+    });
+
+    $('input.flexdatalist').on('select:flexdatalist', function(event, set, options) {
+        if(set.href== undefined){
+            location.href = "https://zdesapteka.ru/catalog/?q=" + set.title;
+        }else{
+            location.href = set.href;
+        }
+    });
+
+    document.getElementById("myZdForm").addEventListener('keyup', keypress);
+
+    function keypress(e){
+        e.preventDefault()
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            location.href="https://zdesapteka.ru/catalog/?q="+$('.myZdSelect').val();
+        }
+    }
+});

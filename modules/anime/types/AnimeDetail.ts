@@ -8,6 +8,7 @@ interface AnimeDetail
     year: string,
     kinopoisk_id: number,
     imdb_id: number,
+    last_episode: number,
     episodes?: Episode[]
     worldart_link: string,
     link: string,

@@ -1,6 +1,6 @@
 <template>
-    <div class="context-menu-link">
-        <Icon :name="props.iconName" v-if="props.iconName" class="icon"/>
+    <div class="context-menu-link" @click.stop="onClick">
+        <Icon :name="props.iconName" v-if="props.iconName" class="icon" />
         <NuxtLink v-if="props.to" :to="props.to">
             <slot />
         </NuxtLink>
@@ -13,6 +13,17 @@
 const props = defineProps<{
     to?: string,
     iconName?: string
+}>();
+const inst = getCurrentInstance() as any;
+function onClick()
+{
+    inst.parent.devtoolsRawSetupState.close();
+    
+    emit('click')
+}
+
+const emit = defineEmits<{
+  (e: 'click'): void;
 }>();
 </script>
 <style lang="scss">

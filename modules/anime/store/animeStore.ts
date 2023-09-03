@@ -8,6 +8,7 @@ interface AnimeState
 {
     relatedAnimeList: RelatedAnime[]
     allAnime: AnimeDetail[],
+    animeTopics: AnimeTopics,
     currentAnime: AnimeDetail | null
 }
 const globalStore = useGlobalStore();
@@ -15,6 +16,7 @@ export const useAnime = defineStore('animeStore',{
     state: (): AnimeState => ({
         relatedAnimeList: [],
         allAnime: [],
+        animeTopics: {} as AnimeTopics,
         currentAnime: null
     }),
   
@@ -24,6 +26,7 @@ export const useAnime = defineStore('animeStore',{
         getCurrentAnime: (state: AnimeState) => state.currentAnime,
         anime: (state: AnimeState) => state.allAnime,
         getRelatedAnime: (state: AnimeState) => state.relatedAnimeList,
+        getTopics: (state: AnimeState) => state.animeTopics
     },
   
     actions: 
@@ -83,9 +86,8 @@ export const useAnime = defineStore('animeStore',{
         {   
             // globalStore.setLoading(true);
             const response = await animeRepository.getAnimeTopics();
-            // globalStore.setLoading(false);
-            return response.value as AnimeTopics
-            
+            this.animeTopics = response.value;
+
         },
 
         /*

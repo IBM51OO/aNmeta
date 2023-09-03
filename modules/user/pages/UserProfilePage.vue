@@ -1,11 +1,13 @@
 <template>
     <div class="user-profile" v-if="user">
-        <div class="user-profile__card">
+        <div class="user-profile__card" :style="{'background': `linear-gradient(rgba(0, 0, 0, 0.427),rgba(0, 0, 0, 1)), url(${user.backgroundAvatar}) no-repeat`}">
             <div class="card__user-avatar">
-                <span class="user-avatar__edit-profile">
-                    Редактировать профиль
-                </span>
-                <img src="https://3dnews.ru/assets/external/illustrations/2018/09/26/976011/Steins-Gate-Elite_2.png" alt="" class="user-avatar__img">
+                <NuxtLink to="/settings">
+                    <span class="user-avatar__edit-profile">
+                        Редактировать профиль
+                    </span>
+                </NuxtLink>
+                <img :src="user.avatar" alt="" class="user-avatar__img">
             </div>
             <div class="card__user-name">
                 {{ user.name }}
@@ -21,23 +23,35 @@
                     <span>Избранное</span>
                 </div>
                 <div class="achivement-tab user-tab" @click="selectedTab = 'achivement'" :class="{'user-tab_active': selectedTab === 'achivement'}">
-                    <span>Достижения</span>
+                    ewfwefw
                 </div>
             </div>
         </div>
         <div class="user-profile__content">
-            <component :is="currentTab" />
+            <div class="content__background">
+                <keep-alive>
+                    <component :is="currentTab" />
+                </keep-alive>
+            </div>
         </div>
     </div>
 </template>
 <script lang="ts" setup>
 import { useUserStore } from "@/modules/user/store/UserStore";
 import UserStatistic from "@/modules/user/components/UserStatistic.vue";
+import UserHistory from "@/modules/user/components/UserHistory.vue";
 
-const statistic = resolveComponent('UserStatistic') 
+
+const statistic = resolveComponent('UserStatistic')
+const history = resolveComponent('UserHistory')
+
 
 const userStore = useUserStore();
-const user = computed(() => userStore.getUser)
+const route = useRoute();
+
+await userStore.fetchUserById(Number(route.params.id))
+
+const user = computed(() => userStore.getCurrentUserProfile)
 
 const selectedTab = ref('statistic');
 
@@ -46,6 +60,10 @@ const currentTab = computed(() =>
     if(selectedTab.value === 'statistic')
     {
         return statistic
+    }
+    if(selectedTab.value === 'history')
+    {
+        return history
     }
 })
 
@@ -56,8 +74,8 @@ const currentTab = computed(() =>
     .user-profile__card
     {
         border-bottom: 1px #262626 solid;
-        background: linear-gradient(rgba(0, 0, 0, 0.527),rgba(0, 0, 0, 1)), url('https://c4.wallpaperflare.com/wallpaper/263/5/312/warrior-fantasy-art-samurai-sword-wallpaper-preview.jpg') no-repeat;
-        background-size: cover;
+        // background: linear-gradient(rgba(0, 0, 0, 0.527),rgba(0, 0, 0, 1)) no-repeat !important;
+        background-size: cover !important;
         height: 500px;
         position: relative; 
         

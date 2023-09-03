@@ -1,73 +1,77 @@
 <template>
-    <section class="sign-up">
-        <div class="sign-up__left-card">
-            <div class="left-card__row">
-                <div class="sign-up__label">
-                    Регистрация                    
-                </div>
-                <Form @submit="handleSubmit" :validation-schema="schema" v-slot="{ errors }" class="sign-up__form">
-                    <div class="form-group form__input-nickname">
-                        <div class="field-label">
-                            Никнейм
+    <section class="sign-up__wrraper">
+        <div class="container">
+            <div class="sign-up">
+                <div class="sign-up__left-card">
+                    <div class="left-card__row">
+                        <div class="sign-up__label">
+                            Регистрация                    
                         </div>
-                        <Field 
-                            name="name" 
-                            v-model="user.name" 
-                            placeholder="Никнейм" 
-                            :class="{ 'is-invalid': errors.name }" 
-                        />
-                        <div class="invalid-feedback">{{errors.name}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="field-label">
-                            E-mail
-                        </div>
-                        <Field 
-                            name="email" 
-                            v-model="user.email" 
-                            placeholder="E-mail" 
-                            :class="{ 'is-invalid': errors.email }" 
-                        />
-                        <div class="invalid-feedback">{{errors.email}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="field-label">
-                            Пароль
-                        </div>
-                        <Field 
-                            name="password" 
-                            type="password" 
-                            v-model="user.password" 
-                            placeholder="Пароль" 
-                            :class="{ 'is-invalid': errors.password }" 
-                        />
-                        <div class="invalid-feedback">{{errors.password}}</div>
-                    </div>
-                    <div class="form-group">
-                        <div class="field-label">
-                            Повторите пароль
-                        </div>
-                        <Field 
-                            name="confirmPassword" 
-                            type="password" 
-                            v-model="user.passwordConfirm" 
-                            placeholder="Повторите пароль" 
-                            :class="{ 'is-invalid': errors.confirmPassword }" 
-                        />
-                        <div class="invalid-feedback">{{errors.confirmPassword}}</div>
-                    </div>
+                        <Form @submit="handleSubmit" :validation-schema="schema" v-slot="{ errors }" class="sign-up__form">
+                            <div class="form-group form__input-nickname">
+                                <div class="field-label">
+                                    Никнейм
+                                </div>
+                                <Field 
+                                    name="name" 
+                                    v-model="user.name" 
+                                    placeholder="Никнейм" 
+                                    :class="{ 'is-invalid': errors.name }" 
+                                />
+                                <div class="invalid-feedback">{{errors.name}}</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="field-label">
+                                    E-mail
+                                </div>
+                                <Field 
+                                    name="email" 
+                                    v-model="user.email" 
+                                    placeholder="E-mail" 
+                                    :class="{ 'is-invalid': errors.email }" 
+                                />
+                                <div class="invalid-feedback">{{errors.email}}</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="field-label">
+                                    Пароль
+                                </div>
+                                <Field 
+                                    name="password" 
+                                    type="password" 
+                                    v-model="user.password" 
+                                    placeholder="Пароль" 
+                                    :class="{ 'is-invalid': errors.password }" 
+                                />
+                                <div class="invalid-feedback">{{errors.password}}</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="field-label">
+                                    Повторите пароль
+                                </div>
+                                <Field 
+                                    name="confirmPassword" 
+                                    type="password" 
+                                    v-model="user.passwordConfirm" 
+                                    placeholder="Повторите пароль" 
+                                    :class="{ 'is-invalid': errors.confirmPassword }" 
+                                />
+                                <div class="invalid-feedback">{{errors.confirmPassword}}</div>
+                            </div>
 
-                    <button type="submit" class="form__submit-btn">
-                        Зарегистрироваться
-                    </button>
-                </Form>
-                <div class="sign-up__to-sign-in">
-                    <span class="to-sign-in__label">Уже зарегистрированы ? <NuxtLink class="to-sign-in__button" to="/login">Войдите</NuxtLink></span>
+                            <button type="submit" class="form__submit-btn">
+                                Зарегистрироваться
+                            </button>
+                        </Form>
+                        <div class="sign-up__to-sign-in">
+                            <span class="to-sign-in__label">Уже зарегистрированы ? <NuxtLink class="to-sign-in__button" to="/login">Войдите</NuxtLink></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sign-up__right-card">
+                    <!-- <img src="../assets/img/tit.jpg" alt="" class="right-card__poster"> -->
                 </div>
             </div>
-        </div>
-        <div class="sign-up__right-card">
-            <img src="../assets/img/tit.jpg" alt="" class="right-card__poster">
         </div>
     </section>
 </template>
@@ -135,10 +139,16 @@ function handleSubmit()
         font-weight: 500;
     }
 }
+.sign-up__wrraper
+{
+    background: url('../assets/img/tit.jpg') no-repeat;
+    background-size: cover;
+}
 .sign-up
 {
     // padding-top: 60px;
     display: flex;
+    
     height: 100vh;
     .sign-up__label
     {

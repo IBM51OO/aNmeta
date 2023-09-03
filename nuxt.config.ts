@@ -24,6 +24,7 @@ export default defineNuxtConfig({
         'nuxt-icon',
         '~/modules/user/module',
         '~/modules/home/module',
+        '~/modules/catalogue/module',
         '~/modules/anime/module',
         
         // '@sidebase/nuxt-auth',

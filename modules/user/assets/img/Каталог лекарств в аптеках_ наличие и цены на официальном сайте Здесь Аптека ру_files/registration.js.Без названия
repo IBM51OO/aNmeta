@@ -1,0 +1,53 @@
+function registerUser(formData)
+{
+    var actionPromise = BX.ajax.runComponentAction("zdravservis:registration",
+        "registerUser",
+        {
+            mode:'class',
+            data: {formData, useMindBox: true}
+        }
+    );
+    actionPromise.then(
+        function(response){
+            BX.reload();
+        },
+        onRegisterRegect,
+    );
+}
+
+function onRegisterRegect(response)
+{
+    $('#submitRegistration').html($('#submitRegistration').attr('title'));
+    for(var i = 0; i < response.errors.length; i++)
+    {
+        var error = response.errors[i];
+        switch (error.code)
+        {
+            case 0:// не заполнены обязательные поля
+                for(var fieldName in error.customData)
+                {
+                    $(`input[name="${fieldName}"]`).parent().after(
+                        `<label for="" class="error">${error.customData[fieldName].MESSAGE}</label>`
+                    );
+                }
+                break;
+            case 1:// общая ошибка(например, такой пользователь уже есть)
+                $("#error").html(error.message);
+                $("#error").show();
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+$(document).on("click", "#submitRegistration", function(e){
+    e.preventDefault();
+    $('#submitRegistration').html('<img src="'+$('#submitRegistration').attr('data-loading')+'" alt=""/>');
+    var formData = $("#registrationForm").serializeArray();
+    var serializedData = {};
+    for(var i=0; i<formData.length; i++)
+        serializedData[formData[i].name] = formData[i].value;
+    $('label.error').remove();
+    registerUser(serializedData);
+});

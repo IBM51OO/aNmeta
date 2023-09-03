@@ -1,0 +1,17 @@
+nav.breadcrumbs{
+	margin:30px 0;
+	font-size: 13px;
+}
+
+nav.breadcrumbs div{
+	display: inline;
+}
+
+nav.breadcrumbs a{
+	color: #8E979D;
+	text-decoration: none;
+}
+
+nav.breadcrumbs > span span{
+	color: #42515C;
+}
